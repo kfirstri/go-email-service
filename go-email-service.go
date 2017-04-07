@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 
+	"log"
+
 	"github.com/kfirstri/go-email-service/models"
 )
 
-// Consts for all files and formatsc 
+// Consts for all files and formatsc
 const usersFile = "users.csv"
 const groupsFile = "group_members.csv"
 const preferencesFile = "user_email_preferences.csv"
@@ -46,6 +48,14 @@ func loadUserAndGroups() error {
 	}
 
 	return nil
+}
+
+func sendEmail(email *models.Email, recipients []*models.User, subject, body string) {
+	for _,rec := range recipients {
+		log.Printf("%v,%v", email.ID, rec.ID)
+		log.Printf(emailSubjectFormat, email.ID, rec.ID)
+		log.Printf(emailBodyFormat, email.ID, rec.ID)
+	}
 }
 
 func main() {

@@ -75,9 +75,9 @@ func handleGroupsFile(record []string) {
 
 // handlePreferencesFile gets a preferences record and adds it to the User's preferences map
 func handlePreferencesFile(record []string) {
-	userID,_ := strconv.Atoi(record[0])
+	userID, _ := strconv.Atoi(record[0])
 	emailType := record[1]
-	isEnabled,_ := strconv.ParseBool(record[2])
+	isEnabled, _ := strconv.ParseBool(record[2])
 
 	Users[userID].Preferences[emailType] = isEnabled
 }
@@ -94,5 +94,8 @@ func handleEmailsFile(record []string) {
 		return
 	}
 
-	
+	// Parse templates
+
+	// Send Emails
+	sendEmail(currEmail, recipients, "", "")
 }

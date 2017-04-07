@@ -22,8 +22,8 @@ func NewEmailFromRecord(record []string) *Email {
 	var currEmail Email
 
 	// Parse email id and recipient id to int
-	emailid,_ := strconv.Atoi(record[0])
-	recipientid,_ := strconv.Atoi(record[3])
+	emailid, _ := strconv.Atoi(record[0])
+	recipientid, _ := strconv.Atoi(record[3])
 
 	// Fill rest of the struct
 	currEmail.ID = emailid
@@ -40,25 +40,26 @@ func NewEmailFromRecord(record []string) *Email {
 
 // GetRecipients gets the user map and returns the real recipients of the email
 func (currEmail *Email) GetRecipients(users *map[int]*User, groups *map[int][]int) []*User {
-	var userIDs []int
+	var userIDs = make([]int, 0)
 	var Recipients = make([]*User, 0)
 
 	// Get the user IDs to check
-	if currEmail.RecipientType == "group_id" {
-		copy(userIDs, (*groups)[currEmail.RecipientID])
+	if currEmail.RecipientType == "group_mail" {
+		userIDs = append(userIDs, (*groups)[currEmail.RecipientID]...)
 	} else if currEmail.RecipientType == "direct" {
-		userIDs = make([]int, 1)
-		userIDs[0] = currEmail.RecipientID
+		userIDs = append(userIDs, currEmail.RecipientID)
 	}
 
 	// Filter according to preferences
-	for userID := range userIDs {
-		currUser := (*users)[userID]
-		
-		isEnabled, exists := currUser.Preferences[currEmail.Type]
+	for _, userID := range userIDs {
+		currUser,exists := (*users)[userID]
 
-		if isEnabled || !exists {
-			Recipients = append(Recipients, currUser)
+		if exists {
+			isEnabled, exists := currUser.Preferences[currEmail.Type]
+
+			if isEnabled || !exists {
+				Recipients = append(Recipients, currUser)
+			}
 		}
 	}
 
