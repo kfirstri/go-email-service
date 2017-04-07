@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/kfirstri/go-email-service/models"
+	"encoding/json"
 )
 
 // ReadFile reads the csv file specified in filename
@@ -24,6 +25,9 @@ func ReadFile(filename string, handleRecord func([]string)) error {
 
 	// Create a new CSV reader
 	csvReader := csv.NewReader(bufio.NewReader(file))
+
+	// Enable lazyQuotes so we can read JSON from the CSV
+	csvReader.LazyQuotes = true
 
 	// Start reading
 	csvRecord, err := csvReader.Read()
@@ -85,6 +89,7 @@ func handlePreferencesFile(record []string) {
 // handleEmailsFile handles emails
 func handleEmailsFile(record []string) {
 	var currEmail = models.NewEmailFromRecord(record)
+	// var parsedPerRecipient = make(map[int][2]string)
 
 	// Get the recipients
 	recipients := currEmail.GetRecipients(&Users, &Groups)
@@ -95,6 +100,9 @@ func handleEmailsFile(record []string) {
 	}
 
 	// Parse templates
+	var contentJSON interface{}
+	_ = json.Unmarshal([]byte(currEmail.Data), &contentJSON)
+
 
 	// Send Emails
 	sendEmail(currEmail, recipients, "", "")
