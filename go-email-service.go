@@ -6,7 +6,7 @@ import (
 	"github.com/kfirstri/go-email-service/models"
 )
 
-// Consts for all files and formats
+// Consts for all files and formatsc 
 const usersFile = "users.csv"
 const groupsFile = "group_members.csv"
 const preferencesFile = "user_email_preferences.csv"
@@ -56,5 +56,12 @@ func main() {
 
 	if err != nil {
 		panic(fmt.Sprintf("Error loading data: %v", err))
+	}
+
+	// Start going over emails and handle them.
+	err = ReadFile(emailsFile, handleEmailsFile)
+
+	if err != nil {
+		panic(fmt.Sprintf("Error loading emails file: %v", err))
 	}
 }

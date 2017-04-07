@@ -53,7 +53,7 @@ func handleUsersFile(record []string) {
 	}
 
 	// Add the new user to the Users map
-	Users[user.UserID] = user
+	Users[user.ID] = user
 }
 
 // handleGroupsFile gets a group record, create a new record in the Groups maps
@@ -75,9 +75,24 @@ func handleGroupsFile(record []string) {
 
 // handlePreferencesFile gets a preferences record and adds it to the User's preferences map
 func handlePreferencesFile(record []string) {
-	userID, _ := strconv.Atoi(record[0])
+	userID,_ := strconv.Atoi(record[0])
 	emailType := record[1]
-	isEnabled, _ := strconv.ParseBool(record[2])
+	isEnabled,_ := strconv.ParseBool(record[2])
 
 	Users[userID].Preferences[emailType] = isEnabled
+}
+
+// handleEmailsFile handles emails
+func handleEmailsFile(record []string) {
+	var currEmail = models.NewEmailFromRecord(record)
+
+	// Get the recipients
+	recipients := currEmail.GetRecipients(&Users, &Groups)
+
+	// If there are not recipients don't send the email
+	if len(recipients) == 0 {
+		return
+	}
+
+	
 }
