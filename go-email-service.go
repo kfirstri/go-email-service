@@ -57,6 +57,4 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("Error loading data: %v", err))
 	}
-
-	
 }
