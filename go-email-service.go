@@ -1,11 +1,7 @@
 package main
 
 import (
-	"bufio"
-	"encoding/csv"
 	"fmt"
-	"io"
-	"os"
 	"strconv"
 
 	"github.com/kfirstri/go-email-service/models"
@@ -19,37 +15,6 @@ const emailsFile = "emails.csv"
 const outputFolder = "sent_emails/"
 const emailSubjectFormat = "%v_%v_subject.txt"
 const emailBodyFormat = "%v_%v_body.html"
-
-// ReadFile reads the csv file specified in filename
-func ReadFile(filename string, handleRecord func([]string)) error {
-	// Open the file
-	file, err := os.Open(filename)
-	defer file.Close()
-
-	if err != nil {
-		return err
-	}
-
-	// Create a new CSV reader
-	csvReader := csv.NewReader(bufio.NewReader(file))
-
-	// Start reading
-	csvRecord, err := csvReader.Read()
-
-	// Loop until eof
-	for err != io.EOF {
-
-		// Make sure we don't some different error
-		if err != nil {
-			return err
-		}
-
-		handleRecord(csvRecord)
-		csvRecord, err = csvReader.Read()
-	}
-
-	return nil
-}
 
 func main() {
 	// Initialize users and groups
@@ -84,6 +49,7 @@ func main() {
 
 		_, exists := Groups[groupID]
 
+		// If the group's users array doesn't exists we need to allocate it
 		if exists {
 			Groups[groupID] = append(Groups[groupID], userID)
 		} else {
@@ -95,4 +61,5 @@ func main() {
 	if err != nil {
 		fmt.Printf("Error in reading groups file: %v", err)
 	}
+
 }
