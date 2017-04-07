@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/kfirstri/go-email-service/models"
 )
@@ -16,50 +15,48 @@ const outputFolder = "sent_emails/"
 const emailSubjectFormat = "%v_%v_subject.txt"
 const emailBodyFormat = "%v_%v_body.html"
 
-func main() {
-	// Initialize users and groups
-	var Users = make(map[int]*models.User)
-	var Groups = make(map[int][]int)
+// Users is the map with all the server users
+var Users = make(map[int]*models.User)
+
+// Groups are the server's user group
+var Groups = make(map[int][]int)
+
+func loadUserAndGroups() error {
 	var err error
 
 	// Create a new User for each record in usersFile
-	err = ReadFile(usersFile, func(record []string) {
-		user, err := models.NewUserFromRecord(record)
-
-		if err != nil {
-			fmt.Printf("Error in creating new User: %v", err)
-		}
-
-		// Add the new user to the Users map
-		Users[user.UserID] = user
-	})
+	err = ReadFile(usersFile, handleUsersFile)
 
 	if err != nil {
-		fmt.Printf("Error in reading users file: %v", err)
-	}
-
-	for userID, user := range Users {
-		fmt.Printf("User ID %v, User = %+v\n", userID, user)
+		return err
 	}
 
 	// Fill the Groups map
-	err = ReadFile(groupsFile, func(record []string) {
-		groupID, _ := strconv.Atoi(record[0])
-		userID, _ := strconv.Atoi(record[1])
-
-		_, exists := Groups[groupID]
-
-		// If the group's users array doesn't exists we need to allocate it
-		if exists {
-			Groups[groupID] = append(Groups[groupID], userID)
-		} else {
-			Groups[groupID] = make([]int, 1)
-			Groups[groupID][0] = userID
-		}
-	})
+	err = ReadFile(groupsFile, handleGroupsFile)
 
 	if err != nil {
-		fmt.Printf("Error in reading groups file: %v", err)
+		return err
 	}
 
+	// Read user's Preferences
+	err = ReadFile(preferencesFile, handlePreferencesFile)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func main() {
+	var err error
+
+	// Load all data
+	err = loadUserAndGroups()
+
+	if err != nil {
+		panic(fmt.Sprintf("Error loading data: %v", err))
+	}
+
+	
 }
