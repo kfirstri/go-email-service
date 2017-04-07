@@ -1,0 +1,20 @@
+{
+  "name": "go-email-service",
+  "version": "1.0.0",
+  "description": "Golang fake mail server",
+  "main": "index.js",
+  "scripts": {
+    "build": "go build -o build/go-email-service.exe",
+    "start": "build/go-email-service.exe"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kfirstri/go-email-service.git"
+  },
+  "author": "kfirstri",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kfirstri/go-email-service/issues"
+  },
+  "homepage": "https://github.com/kfirstri/go-email-service#readme"
+}
