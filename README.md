@@ -2,7 +2,7 @@
 GoLang email service controlled with CSV
 
 ## How to run?
-* You can build using `npm run build` or just grab the latest release from [https://github.com/kfirstri/go-email-service/releases](project releases)
+* You can build using `npm run build` or just grab the latest release from https://github.com/kfirstri/go-email-service/releases
 * `cd build/` make sure you have this folder structure:
   * sent_emails/
   * users.csv
