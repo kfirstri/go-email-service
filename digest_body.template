@@ -1,5 +1,0 @@
-Hello!
-Can you please answer this question - 
-{{ content }}
-Thank you, {{ first_name }}
-= this mail was sent to {{ email_address }}.
