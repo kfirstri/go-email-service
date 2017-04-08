@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 
+	"os"
+	"strings"
+
 	"github.com/kfirstri/go-email-service/models"
 )
 
@@ -14,12 +17,16 @@ const emailsFile = "emails.csv"
 const outputFolder = "sent_emails/"
 const emailSubjectFormat = "%v_%v_subject.txt"
 const emailBodyFormat = "%v_%v_body.html"
+const logFile = "sent_emails.txt"
 
 // Users is the map with all the server users
 var Users = make(map[int]*models.User)
 
 // Groups are the server's user group
 var Groups = make(map[int][]int)
+
+// EmailsLog contains all the sent emails and will be written eventually
+var EmailsLog []string
 
 func loadUserAndGroups() error {
 	var err error
@@ -48,6 +55,23 @@ func loadUserAndGroups() error {
 	return nil
 }
 
+func addToLog(email string) {
+	EmailsLog = append(EmailsLog, email)
+}
+
+func writeLog() {
+	fs, err := os.Create(logFile)
+
+	if err != nil {
+		fmt.Printf("err creating file '%v': %v", logFile, err)
+		return
+	}
+
+	fs.WriteString(strings.Join(EmailsLog, "\n"))
+
+	fs.Close()
+}
+
 func main() {
 	var err error
 
@@ -64,4 +88,9 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("Error loading emails file: %v", err))
 	}
+
+	// Dump log to file
+	writeLog()
+
+	fmt.Printf("%v emails were sent. You may watch the log at %v", len(EmailsLog), logFile)
 }

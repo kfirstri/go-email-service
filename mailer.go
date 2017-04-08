@@ -75,8 +75,7 @@ func sendEmail(email *models.Email, recipients []*models.User, data map[string]i
 		fakeEmailFile(bodyFileName, data, templates["body"])
 
 		log.Printf("%v,%v", email.ID, rec.ID)
-		log.Printf(emailSubjectFormat, email.ID, rec.ID)
-		log.Printf(emailBodyFormat, email.ID, rec.ID)
+		addToLog(fmt.Sprintf("%v,%v", email.ID, rec.ID))
 	}
 }
 
