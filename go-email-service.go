@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 
-	"log"
-
 	"github.com/kfirstri/go-email-service/models"
 )
 
@@ -48,14 +46,6 @@ func loadUserAndGroups() error {
 	}
 
 	return nil
-}
-
-func sendEmail(email *models.Email, recipients []*models.User, subject, body string) {
-	for _,rec := range recipients {
-		log.Printf("%v,%v", email.ID, rec.ID)
-		log.Printf(emailSubjectFormat, email.ID, rec.ID)
-		log.Printf(emailBodyFormat, email.ID, rec.ID)
-	}
 }
 
 func main() {

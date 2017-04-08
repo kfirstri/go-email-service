@@ -10,8 +10,6 @@ import (
 	"strconv"
 
 	"github.com/kfirstri/go-email-service/models"
-	"encoding/json"
-	"text/template"
 )
 
 // ReadFile reads the csv file specified in filename
@@ -100,36 +98,9 @@ func handleEmailsFile(record []string) {
 		return
 	}
 
-	// Parse templates
-	var contentJSON = make(map[string]string)
-	err := json.Unmarshal([]byte(currEmail.Data), &contentJSON)
-
-	fmt.Printf("%v", err)
-
-	contentJSON["first_name"] = Users[1].Firstname
-	contentJSON["last_name"] = Users[1].Lastname
-	contentJSON["email_address"] = Users[1].Email
-
-	fmt.Printf("%+v", contentJSON)
-
-	const text = `
-	Hi {{ .first_name }},
-
-	System found you as best expert to answer this question:
-	{{ .question }}
-
-	If you know the answer, please reply to this email.
-
-	This email was sent to {{ .email_address }}
-
-	`
-
-	t := template.Must(template.New("text").Parse(text))
-
-	err = t.Execute(os.Stdout, contentJSON)
-
-	fmt.Printf("%v", err)
+	// get the JSON data and create a templates
+	data, templates := parseDataAndTemplate(currEmail.Data, currEmail.SubjectTemplate, currEmail.BodyTemplate)
 
 	// Send Emails
-	sendEmail(currEmail, recipients, "", "")
+	sendEmail(currEmail, recipients, data, templates)
 }
